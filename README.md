@@ -35,41 +35,58 @@ This Repository is likely only going to cover the setup of the EC2 instance with
 Let's dive into the `main.tf` file and see what makes this Terraform script tick looking at the comments I left in the code. Using this [blog from gruntwork](https://blog.gruntwork.io/an-introduction-to-terraform-f17df9c6d180#.p56muw3c0) to understand Terraform terminology.
 
 ```
-## PROVIDER
-# using AWS as my provider
-# deploying into us-west-1 region
+## PROVIDER -------------------------------------------------------------
+# - using AWS as my provider
+# - deploying in us-west-1 region
 
 provider "aws" {
   region = "us-west-1" # using this because I am located in Denver
 }
 
-## RESOURCE: RSA public key
-# I am using the one I have linked to github in the filepath below
+## RESOURCE: RSA public key ---------------------------------------------
+# - I am using the one I have linked to github in the filepath below
 
 resource "aws_key_pair" "my_keypair" {
   key_name   = "my-keypair"
   public_key = file("~/.ssh/id_rsa.pub") # Point this to your public key
 }
 
-## RESOURCE: Security Group for RStudio
+## RESOURCE: Create Docker instance -------------------------------------
+# - This resource installs Docker on the EC2 instance, which will end up installing and running the analysis script
+resource "aws_instance" "docker_instance" {
+  ami             = "ami-0c55b159cbfafe1f0"  # Amazon Linux 2 LTS AMI; update if needed
+  instance_type   = "t2.micro"
+
+  key_name        = aws_key_pair.my_keypair.key_name
+  security_groups = [aws_security_group.docker_sg.name]
+
+  tags = {
+    Name = "Docker-EC2"
+  }
+
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo yum update -y
+              sudo yum install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -a -G docker ec2-user
+              EOF
+}
+
+
+## RESOURCE: Security Group for Docker --------------------------------
 # This allows receive traffic from specific ports on the instance.
 # CIDR blocks specify IP address ranges
-# - allows incoming requests on port 0, 22, and 8787 from any IP with "0.0.0.0/0"
+# - allows incoming requests on port 0, 22, from any IP with "0.0.0.0/0"
 
-resource "aws_security_group" "rstudio_sg" {
-  name        = "rstudio-sg"
-  description = "RStudio Security Group"
+resource "aws_security_group" "docker_sg" {
+  name        = "docker-sg"
+  description = "Docker Security Group"
 
   ingress {
     from_port   = 22
     to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 8787
-    to_port     = 8787
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -82,31 +99,7 @@ resource "aws_security_group" "rstudio_sg" {
   }
 }
 
-## RESOURCE: t2.micro EC2 instance
-# - Declare the AMI type
-# - Declare the Instance type: t2.micro
-# - Declare the keypair by calling from the resource above
-# - Installs Rstudio Server
 
-resource "aws_instance" "rstudio_instance" {
-  ami           = "ami-0c55b159cbfafe1f0" # Update this to the latest Amazon Linux 2 LTS AMI
-  instance_type = "t2.micro"
-
-  key_name = aws_key_pair.my_keypair.key_name
-
-  security_groups = [aws_security_group.rstudio_sg.name]
-
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo yum update -y
-              sudo amazon-linux-extras install R3.4 -y
-              sudo yum install -y rstudio-server
-              EOF
-
-  tags = {
-    Name = "rstudio-instance"
-  }
-}
 
 ```
 

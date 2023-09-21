@@ -117,7 +117,13 @@ resource "aws_security_group" "docker_sg" {
 
 1. Initialize Terraform with `terraform innit`
 2. Apply the configuration with `terraform apply`
-3. 
+3. Ensure to add relevant files to the `.gitignore` file to ignore the scratch files and state which are constantly updated
+
+```
+.terraform
+*.tfstate
+*.tfstate.backup
+```
 
 ### Installing R and Rstudio on the EC2 instance
 

@@ -20,7 +20,9 @@ This Repository is likely only going to cover the setup of the EC2 instance with
 
 ## Workflow
 
-1. Create Terraform script  called `main.tf`
+### Create Terraform script
+
+Create Terraform script  called `main.tf`.
 
 > Just a quick note for myself for **comments** in terraform code:
 >
@@ -103,6 +105,23 @@ resource "aws_security_group" "docker_sg" {
 
 > Notice that in the `aws_instance` resource, that the `key_name` calls the above resource for the `key_pair` by name as:
 > `aws_key_pair.my_keypair.key_name`. This is because the syntax is as follows: `<PROVIDER>_<TYPE>.<NAME>.<ATTRIBUTE>.
+
+
+### Creating Terraform Instance from main.tf
+
+1. Initialize Terraform with `terraform innit`
+2. Apply the configuration with `terraform apply`
+
+### Installing R and Rstudio on the EC2 instance
+
+### Run Dockerized Python RNA-seq Pipeline
+In this case, I do not want to run an *actual* pipeline, because that would actually cost money. Waiting for a company to let me do this for free 😄
+
+
+
+
+
+
 
 
 ## Versions/Session Info 💻

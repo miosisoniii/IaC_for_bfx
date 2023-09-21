@@ -1,0 +1,4 @@
+# ignoring scratch and state files
+.terraform
+*.ftstate
+*.tfstate.backup

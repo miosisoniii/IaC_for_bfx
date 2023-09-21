@@ -99,8 +99,6 @@ resource "aws_security_group" "docker_sg" {
   }
 }
 
-
-
 ```
 
 > Notice that in the `aws_instance` resource, that the `key_name` calls the above resource for the `key_pair` by name as:

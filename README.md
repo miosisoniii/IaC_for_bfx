@@ -24,11 +24,11 @@ This Repository is likely only going to cover the setup of the EC2 instance with
 
 > Just a quick note for myself for **comments** in terraform code:
 >
-> ```
+> 
 > - `#` begins single-line comment ending at the **end** of the line
 > - `//` begins single-line comment as **alternative** to `#`
-> - `/* and */ are start/end delimiters for comment spanning over multiple lines.
-> ```
+> - `/*` and `*/` are start/end delimiters for comment spanning multiple lines.
+> 
 >
 > Stick with the `#` since some auto-config formatting tools may automatically transform `//` into `#`.
 

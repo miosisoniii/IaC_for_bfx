@@ -22,7 +22,13 @@ This Repository is likely only going to cover the setup of the EC2 instance with
 
 ### Create Terraform script
 
-Create Terraform script  called `main.tf`.
+1. Export access keys so that we can access my AWS account:
+```
+export AWS_ACCESS_KEY_ID=BLAHBLAHLAHBLAH
+export AWS_SECRET_ACCESS_KEY_ID=BLAHBLAHBLAHBLAH
+```
+
+2. Create Terraform script  called `main.tf`.
 
 > Just a quick note for myself for **comments** in terraform code:
 >

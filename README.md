@@ -125,12 +125,28 @@ resource "aws_security_group" "docker_sg" {
 *.tfstate.backup
 ```
 
+This is the output from `terraform apply`, showing that any settings from my `main.tf` file are set to the *default* AWS EC2 and docker server settings:
+![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/992cef2e-41cf-4216-8929-76c2c4a713bc)
+
+And here's my `key_pair settings`:
+![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/50532508-2cd1-4618-9272-ffda08e27b86)
+
+and the docker security group settings:
+![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/91f073cb-9262-44da-afc9-723d37cfca0c)
+
+
+
+
 ### Installing R and Rstudio on the EC2 instance
 
 1. SSH into the EC2 instance `ssh -i ~/.ssh/id_rsa ec2-user@IP`
 2. Install R and Rstudio on the instance
 3. sudo amazon-linux-extras install R3.4 -y
 4. sudo yum install -y rstudio-server
+
+
+
+
 
 ### Run Dockerized Python RNA-seq Pipeline
 In this case, I do not want to run an *actual* pipeline, because that would actually cost money. Waiting for a company to let me do this for free 😄

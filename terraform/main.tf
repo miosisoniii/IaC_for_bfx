@@ -17,7 +17,7 @@ resource "aws_key_pair" "my_keypair" {
 ## RESOURCE: Create Docker instance -------------------------------------
 # - This resource installs Docker on the EC2 instance, which will end up installing and running the analysis script
 resource "aws_instance" "docker_instance" {
-  ami             = "ami-0c55b159cbfafe1f0"  # Amazon Linux 2 LTS AMI; update if needed
+  ami             = "ami-06d2c6c1b5cbaee5f"  # Amazon Linux 2 LTS AMI; update if needed
   instance_type   = "t2.micro"
 
   key_name        = aws_key_pair.my_keypair.key_name

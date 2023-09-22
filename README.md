@@ -129,12 +129,15 @@ resource "aws_security_group" "docker_sg" {
 
 
 This is the output from `terraform apply`, showing that any settings from my `main.tf` file are set to the *default* AWS EC2 and docker server settings:
+
 ![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/992cef2e-41cf-4216-8929-76c2c4a713bc)
 
 And here's my `key_pair settings`:
+
 ![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/7020a8d2-47ac-4fd0-96a0-7f00180e2ced)
 
 and the docker security group settings:
+
 ![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/a1466d17-438d-4206-9ff0-0a42abde623a)
 
 
@@ -145,17 +148,87 @@ and the docker security group settings:
 2. SSH into the EC2 instance `ssh -i "~/.ssh/id_rsa" ec2-user@publicIP`
 3. Install R and Rstudio on the instance
   - `sudo yum update -y` to update package lists (`yum` is the package manager used in LINUX
-  - Install R4.0+ `sudo amazon-linux-extras install R4 -y`
+  - Install R4.0+ `sudo yum install -y R` (this installs R 4.1.3, the most recent R version)
     - Check R Version with `R --version`
-  - Download R Studio: `wget https://download2.rstudio.org/server/centos7/x86_64/rstudio-server-rhel-1.4.1717-x86_64.rpm)
-  - Then install `sudo yum install rstudio-server-rhel-1.4.1717-x86_64.rpm -y`
-
-
-
+  - Download R Studio: `wget https://download2.rstudio.org/server/centos7/x86_64/rstudio-server-rhel-2023.06.2-561-x86_64.rpm`
+  - Then install Rstudio `sudo yum install rstudio-server-rhel-1.4.1717-x86_64.rpm -y`
 
 
 ### Run Dockerized Python RNA-seq Pipeline
 In this case, I do not want to run an *actual* pipeline, because that would actually cost money. Waiting for a company to let me do this for free 😄
+
+1. Build a mock script that will be used as a placeholder called `my_bfx_script.py`
+```
+# my_bfx_script.py
+import pandas as pd
+import time
+import sys
+
+# load pandas message
+print("sucessfully loaded pandas library!")
+
+
+# Load gene counts and sample metadata
+# gene_counts = pd.read_csv("gene_counts.csv")
+# sample_metadata = pd.read_csv("sample_metadata.csv")
+
+# Filter out lowly-expressed genes
+# gene_counts_filtered = gene_counts[gene_counts.sum(axis=1) > 10]
+
+# Log2 transformation
+# gene_counts_log2 = gene_counts_filtered.apply(lambda x: x + 1).apply(np.log2)
+
+# Export processed data to a new CSV file
+# gene_counts_log2.to_csv("gene_counts_log2.csv", index=False)
+
+# make a progress bar
+def progress_bar(duration):
+    step = duration // 50  # Calculate the step for 50 segments in the progress 
+bar
+    sys.stdout.write("Processing: [")
+    
+    for i in range(50):
+        time.sleep(step)  # Pause for 'step' seconds
+        sys.stdout.write("=")
+        sys.stdout.flush()  # Flush the output buffer
+    
+    sys.stdout.write("] Done!\n")
+
+progress_bar(5) 
+
+# success message
+print("Completed RNA-seq analysis with Python.")
+```
+   
+2. Build dockerfile
+```
+FROM python:3.8
+
+WORKDIR /app
+
+# copy and install requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# copy script
+COPY my_bfx_script.py .
+
+# run script
+CMD ["python", "my_bfx_script.py"]
+```
+
+3. Write library requirements to install in the Docker image
+```
+numpy==1.21.0
+pandas==1.3.3
+```
+
+4. Start docker `sudo systemctl start docker`
+5. Build the image from the `Dockerfile`: `docker build -t bfx_py_img .`
+<img width="577" alt="image" src="https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/593e4fac-d47a-41e8-a704-99735d178464">
+
+6. Now run the `docker` image containing the mock python script `docker run bfx_py_img`
+<img width="521" alt="image" src="https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/884107e1-3cb6-488d-81f4-a90dc4fb8cb2">
 
 
 
@@ -166,8 +239,13 @@ In this case, I do not want to run an *actual* pipeline, because that would actu
 
 ## Versions/Session Info 💻
 
+LOCAL
 - OS: iOS Ventura v13.5.2
 - aws-cli: v2.13.9
 - terraform: v1.5.7 on `darwin_arm64`
 - VScode: v1.82.2
 - git: v2.42.0
+EC2 instance
+- rstudio-server: v2023.06.2+561 (Mountain Hydrangea) for CentOS 7
+- R: v4.1.3
+- docker🐋: v24.0.5 build ced0996

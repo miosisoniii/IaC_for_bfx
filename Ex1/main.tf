@@ -15,7 +15,7 @@ resource "aws_key_pair" "my_key_pair" {
 ## Push 5 instances
 
 ## But first only create one instance
-esource "aws_instance" "docker_instance" {
+source "aws_instance" "ec2-instance1" {
   ami             = "ami-06d2c6c1b5cbaee5f"  # Amazon Linux 2 LTS AMI; update if needed
   instance_type   = "t2.micro"
 

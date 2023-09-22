@@ -1,0 +1,4 @@
+# remove binaries and scratch files from init
+.terraform
+*.tfstate
+*.tfstate.backup

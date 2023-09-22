@@ -217,7 +217,7 @@ COPY my_bfx_script.py .
 CMD ["python", "my_bfx_script.py"]
 ```
 
-3. Write library requirements to install in the Docker image
+3. Write library requirements to install in the Docker image in a file called `requirements.txt`
 ```
 numpy==1.21.0
 pandas==1.3.3

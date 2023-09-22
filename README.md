@@ -113,36 +113,42 @@ resource "aws_security_group" "docker_sg" {
 > `aws_key_pair.my_keypair.key_name`. This is because the syntax is as follows: `<PROVIDER>_<TYPE>.<NAME>.<ATTRIBUTE>.
 
 
-### Creating Terraform Instance from main.tf
+### Create Terraform Instance from main.tf for AWS EC2 Instance
 
-1. Initialize Terraform with `terraform innit`
-2. Apply the configuration with `terraform apply`
-3. Ensure to add relevant files to the `.gitignore` file to ignore the scratch files and state which are constantly updated
+1. Ensure to add relevant files to the `./.gitignore` file to ignore the scratch files and state which are constantly updated. 
 
 ```
 .terraform
 *.tfstate
 *.tfstate.backup
 ```
+> Otherwise you'll have thousands of files that will require you to use Git LFS, which costs money! 👎
+
+2. Initialize Terraform with `terraform init`
+3. Apply the configuration with `terraform apply`
+
 
 This is the output from `terraform apply`, showing that any settings from my `main.tf` file are set to the *default* AWS EC2 and docker server settings:
 ![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/992cef2e-41cf-4216-8929-76c2c4a713bc)
 
 And here's my `key_pair settings`:
-![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/50532508-2cd1-4618-9272-ffda08e27b86)
+![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/7020a8d2-47ac-4fd0-96a0-7f00180e2ced)
 
 and the docker security group settings:
-![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/91f073cb-9262-44da-afc9-723d37cfca0c)
+![image](https://github.com/miosisoniii/IaC_for_bfx/assets/23582531/a1466d17-438d-4206-9ff0-0a42abde623a)
 
 
 
+### Installing R and Rstudio on the EC2 instance for RNA-Seq analysis
 
-### Installing R and Rstudio on the EC2 instance
-
-1. SSH into the EC2 instance `ssh -i ~/.ssh/id_rsa ec2-user@IP`
-2. Install R and Rstudio on the instance
-3. sudo amazon-linux-extras install R3.4 -y
-4. sudo yum install -y rstudio-server
+1. Locate the EC2 instance **public** IP address by logging into the AWS console.
+2. SSH into the EC2 instance `ssh -i "~/.ssh/id_rsa" ec2-user@publicIP`
+3. Install R and Rstudio on the instance
+  - `sudo yum update -y` to update package lists (`yum` is the package manager used in LINUX
+  - Install R4.0+ `sudo amazon-linux-extras install R4 -y`
+    - Check R Version with `R --version`
+  - Download R Studio: `wget https://download2.rstudio.org/server/centos7/x86_64/rstudio-server-rhel-1.4.1717-x86_64.rpm)
+  - Then install `sudo yum install rstudio-server-rhel-1.4.1717-x86_64.rpm -y`
 
 
 

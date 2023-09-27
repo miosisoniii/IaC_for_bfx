@@ -170,3 +170,15 @@ output "alb_dns_name" {
 ```
 
 10. Check what was created by entering this in the console: `curl http://<alb_dns_name>`
+
+
+
+# Example 1 
+
+## Ex1a Create 5 instances written as separate resources
+Successfully completed, all using the same security group and key_pair
+![Alt text](image-1.png)
+
+
+## Ex1b Refactor Using loops until it matches what is already deployed in AWS
+
